@@ -200,3 +200,43 @@ app.use(express.static('public'));
 app.use(express.urlencoded({extended: false}));
 ...
 ```
+
+#### メモを追加する処理を作成していきます。
+
+list-app/app.js
+```JavaScript
+...
+app.post('/create', (req, res) => {
+  // データベースに追加する処理を書いてください
+  connection.query(
+    'INSERT INTO items (name) VALUES (?)', [req.body.itemName],
+    (error, results) => {
+      connection.query(
+        'SELECT * FROM items',
+        (error, results) => {
+          res.render('index.ejs', {items: results});
+        }
+      );
+    }
+  );
+});
+...
+```
+
+#### リダイレクトをするように変更を加えます。
+
+list-app/app.js
+```JavaScript
+...
+app.post('/create', (req, res) => {
+  connection.query(
+    'INSERT INTO items (name) VALUES (?)',
+    [req.body.itemName],
+    (error, results) => {
+      // 一覧画面にリダイレクトしてください
+      res.redirect('/index');
+    }
+  );
+});
+...
+```
